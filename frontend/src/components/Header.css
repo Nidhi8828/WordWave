@@ -1,0 +1,112 @@
+/* Navbar container */
+.custom-navbar {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* right: 0; */
+    padding: 20px 8%;
+    background-color: transparent;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* font-family: 'Poppins', sans-serif; */
+  }
+  
+  /* Branding / site name */
+  .custom-brand {
+    font-size: 1.8rem;
+    /* font-weight: bold; */
+    text-decoration: none;
+    color: white;
+    margin-left: 20px;
+  }
+  
+  /* Toggler button for mobile */
+  .custom-toggler {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none; /* Hidden by default; only show in small screens */
+  }
+  
+  .custom-icon {
+    color: white;
+  }
+  
+  /* Navigation collapse container */
+  .custom-nav-collapse {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  /* Navigation list */
+  .custom-nav-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+  }
+  
+  /* Navigation item */
+  .custom-nav-item {
+    margin: 0;
+  }
+  
+  /* nav{
+    width:100%;
+    top:0;
+    left:0;
+    display:flex;
+    padding:20px 8%;
+    justify-content: space-between;
+    align-items: center; 
+  } */
+
+  /* Navigation link */
+  .custom-link {
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    margin-left: 40px;
+    list-style: none;
+    display: inline-block;
+  }
+  
+  .custom-link:hover {
+    color: #ddd;
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    .custom-nav-collapse {
+      display: none;
+    }
+  
+    .custom-toggler {
+      display: block;
+    }
+  
+    .custom-nav-collapse.show {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      width: 100%;
+    }
+  
+    .custom-nav-list {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+  
