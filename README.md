@@ -79,7 +79,7 @@ Listen to the translated text using the read-aloud feature.
   React, Bootstrap 
 
 - **Backend**:  
-  Node.js, Express.js  
+  Node.js, Express.js ,PHP
 
 - **Database**:  
   MySQL (via XAMPP)  
