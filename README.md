@@ -82,7 +82,7 @@ Listen to the translated text using the read-aloud feature.
   Node.js, Express.js ,PHP
 
 - **Database**:  
-  MySQL (via XAMPP)  
+  MySQL
 
 - **APIs**:  
   Google Translation API, Responsive Voice API (for text-to-speech functionality)  
