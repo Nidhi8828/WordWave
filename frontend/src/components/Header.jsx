@@ -12,6 +12,20 @@ function Header() {
     }
   }
 
+  const scrolltofooter = () => {
+    const footer = document.getElementById('footer');
+    if (footer) {
+      footer.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
+  const scrolltoabout = () => {
+    const about = document.getElementById('about');
+    if (about) {
+      about.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <nav className="custom-navbar">
       <Link className="custom-brand" to="/">
@@ -23,17 +37,12 @@ function Header() {
       <div className="custom-nav-collapse" id="navDemo">
         <ul className="custom-nav-list">
           <li className="custom-nav-item">
-            <Link className="custom-link" to="/team">
-              Team
+            <Link className="custom-link" to="#" onClick={scrolltoabout}>
+              About
             </Link>
           </li>
           <li className="custom-nav-item">
-            <Link className="custom-link" to="/work">
-              Work
-            </Link>
-          </li>
-          <li className="custom-nav-item">
-            <Link className="custom-link" to="/contact">
+            <Link className="custom-link" to="#" onClick={scrolltofooter}>
               Contact
             </Link>
           </li>

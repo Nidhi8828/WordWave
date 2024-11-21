@@ -1,6 +1,7 @@
 import React from "react";
 import gifImage from "./IrM.gif"; 
 import Hero from './Hero';
+import Explore from './Explore';
 
 function Image() {
     const image = {
@@ -13,6 +14,7 @@ function Image() {
 
     return <div style={image}>
             <Hero />
+            <Explore />
     </div>;
 }
 

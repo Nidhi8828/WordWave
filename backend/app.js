@@ -6,6 +6,9 @@ import multer from 'multer';
 import fs from 'fs';
 import { exec } from 'child_process';
 import path from 'path';
+import axios from "axios";
+
+const RAPIDAPI_KEY='f63a9c47bbmshaf645ec8659af3ep1f7c7cjsna7c8a41d7b50';
 
 // Initialize Express app
 const app = express();
@@ -33,6 +36,8 @@ app.post('/api/extract-text', upload.single('pdf'), async (req, res) => {
     console.log("File object:");
     console.log(req.file);
     const command = `php ./readpdf1.php ${req.file.originalname}`;
+    // const command = `php ${path.resolve("C:/Users/Nidhi/Desktop/Projects/AUDIOTRANSLATEHUB/Audio_Translate_Hub/backend", 'readpdf1.php')} ${path.resolve("C:/Users/Nidhi/Desktop/Projects/AUDIOTRANSLATEHUB/Audio_Translate_Hub/backend", 'uploads', req.file.filename)}`;
+
 
     // Execute the command
     exec(command, (error, stdout, stderr) => {
@@ -61,6 +66,48 @@ app.post('/api/extract-text', upload.single('pdf'), async (req, res) => {
     }
   }
 });
+
+app.post('/api/translate', async (req, res) => {
+  const { text, language } = req.body;
+  console.log(text);
+  console.log(language);
+
+  // Check if text and language are provided
+  if (!text || !language) {
+    return res.status(400).json({ error: 'Text and language are required' });
+  }
+
+  try {
+    // Define the RapidAPI Google Translate API URL
+    const translationApiUrl = 'https://free-google-translator.p.rapidapi.com/external-api/free-google-translator';
+    
+    // Make the POST request to Google Translate API via RapidAPI
+    const response = await axios.post(
+      translationApiUrl,
+      {
+        from: 'en',  // Automatically detect source language
+        to: language,  // The target language passed from the frontend
+        query: text,  // The extracted text to translate
+      },
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'x-rapidapi-key': RAPIDAPI_KEY,  // Your RapidAPI key from .env file
+          'x-rapidapi-host': 'free-google-translator.p.rapidapi.com',
+        },
+      }
+    );
+    console.log(response.data);
+    console.log(response.data.translation);
+    // Return the translated text in the response
+    res.json({ translatedText: response.data.translation });
+  } catch (error) {
+    console.error('Error during translation:', error);
+    res.status(500).json({ error: 'Failed to translate text' });
+  }
+});
+
 
 // Export the app for use in server.js
 export default app;
