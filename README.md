@@ -51,7 +51,7 @@ These instructions will help you set up and run the project locally.
 1.  **Start the Backend Server**:
 ```bash
 cd backend
-npm run dev
+npm start
 ```
 The backend will run on port 5000.
 
@@ -59,7 +59,7 @@ The backend will run on port 5000.
 
 ```bash
 cd frontend
-npm start
+npm run dev
 ```
 The frontend will run on port 3000.
 
