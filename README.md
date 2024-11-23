@@ -32,7 +32,7 @@ These instructions will help you set up and run the project locally.
 
 - **Node.js** (v12 or higher)
 - **Git**
-- **XAMPP** (for MySQL and PHP support)
+- **React.js**
 
 ### Installation
 
