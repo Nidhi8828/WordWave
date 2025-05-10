@@ -1,4 +1,3 @@
-// Updated PDFTranslation.js
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
@@ -30,7 +29,8 @@ function PDFTranslation() {
       });
       setExtractedText(response.data.text);
     } catch (error) {
-      console.error('Error extracting text:', error);
+      console.error('❌ Error extracting text:', error);
+      alert('Failed to extract text from PDF');
     }
   };
 
@@ -44,7 +44,8 @@ function PDFTranslation() {
       const response = await axios.post('http://localhost:5000/api/detect-language', { text: extractedText });
       setDetectedLanguage(response.data.language);
     } catch (error) {
-      console.error('Error detecting language:', error);
+      console.error('❌ Error detecting language:', error);
+      alert('Failed to detect language');
     }
   };
 
@@ -64,8 +65,8 @@ function PDFTranslation() {
 
       setTranslatedText(response.data.translatedText);
     } catch (error) {
-      console.error('Error translating text:', error);
-      alert('Error translating text.');
+      console.error('❌ Error translating text:', error);
+      alert('Failed to translate text');
     } finally {
       setLoading(false);
     }
@@ -81,7 +82,7 @@ function PDFTranslation() {
       responsiveVoice.speak(translatedText, 'UK English Male', { rate: 1, pitch: 1, volume: 1 });
     } else if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(translatedText);
-      utterance.lang = language === 'en' ? 'en-US' : 'hi-IN';
+      utterance.lang = language === 'en' ? 'en-US' : language;
       window.speechSynthesis.speak(utterance);
     } else {
       alert('Text to Speech feature is not available.');
@@ -141,9 +142,12 @@ function PDFTranslation() {
           <option value="it">Italian</option>
           <option value="es">Spanish</option>
           <option value="de">German</option>
+          <option value="hi">Hindi</option>
         </select>
 
-        <button className="btn btn-primary mt-2" onClick={handleTranslate}>Translate</button>
+        <button className="btn btn-primary mt-2" onClick={handleTranslate} disabled={loading}>
+          {loading ? 'Translating...' : 'Translate'}
+        </button>
 
         <div className="border border-warning p-2 mt-2" style={{ height: '100px', overflowY: 'scroll' }}>
           {translatedText || 'Translated text will be shown here ...'}
