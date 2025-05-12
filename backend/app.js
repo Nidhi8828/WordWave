@@ -67,25 +67,36 @@ app.post('/api/detect-language', async (req, res) => {
 // Translate text
 app.post('/api/translate', async (req, res) => {
   const { text, language } = req.body;
-
+  console.log("Text to translate:", text);
+  console.log("Target language:", language);
+console.log( ` env is ${process.env.RAPIDAPI_KEY} `)
   if (!text || !language) {
     return res.status(400).json({ error: 'Text and language are required' });
   }
 
   try {
-    const response = await axios.post('https://translate.argosopentech.com/translate', {
-      q: text,
-      source: 'auto',
-      target: language,
-      format: 'text'
-    }, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    const response = await axios.post(
+      'https://free-google-translator.p.rapidapi.com/external-api/free-google-translator',
+      {
+        from: 'en',
+        to: language,
+        query: text,
+      },
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+          'x-rapidapi-host': 'free-google-translator.p.rapidapi.com',
+        },
+      }
+    );
 
-    res.json({ translatedText: response.data.translatedText });
-  } catch (err) {
-    console.error('❌ Translation error:', err.message);
-    res.status(500).json({ error: 'Translation failed' });
+    console.log("Translated:", response.data.translation);
+    res.json({ translatedText: response.data.translation });
+  } catch (error) {
+    console.error('❌ Error during translation:', error.message);
+    res.status(500).json({ error: 'Failed to translate text' });
   }
 });
 
