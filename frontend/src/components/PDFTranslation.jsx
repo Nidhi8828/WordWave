@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
+
 function PDFTranslation() {
   const [file, setFile] = useState(null);
   const [extractedText, setExtractedText] = useState('');
@@ -21,7 +22,7 @@ function PDFTranslation() {
     }
 
     const formData = new FormData();
-    formData.append('pdf', file);
+    formData.append('doc', file);
 
     try {
       const response = await axios.post('http://localhost:5000/api/extract-text', formData, {
@@ -104,8 +105,15 @@ function PDFTranslation() {
         <p>Select a PDF file, extract its text, and translate or read it aloud.</p>
 
         <div className="mb-3">
-          <label htmlFor="inpfile" className="form-label">Select PDF:</label>
-          <input type="file" className="form-control" id="inpfile" onChange={handleFileChange} />
+        <label htmlFor="inpfile" className="form-label">Select Document:</label>
+<input
+  type="file"
+  className="form-control"
+  id="inpfile"
+  accept=".pdf,.doc,.docx,.txt,.rtf,.odt"
+  onChange={handleFileChange}
+/>
+
         </div>
 
         <button className="btn btn-primary" onClick={handleExtractText}>Extract Text</button>
