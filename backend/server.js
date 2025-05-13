@@ -3,13 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 import app from './app.js';
 
-// Load environment variables from a custom .env file
-
-
-
-// dotenv.config({ path: './config/.env' });
-
-// Get the port number from the environment variables
 const PORT = process.env.PORT || 5000;
 
 // Start the server

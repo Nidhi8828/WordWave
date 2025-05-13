@@ -5,6 +5,8 @@ import multer from 'multer';
 import fs from 'fs';
 import pdfParse from 'pdf-parse';
 import axios from 'axios';
+import registerRoute from './routes/register.js'
+import loginRoute from './routes/login.js'
 
 const app = express();
 app.use(cors());
@@ -99,5 +101,12 @@ console.log( ` env is ${process.env.RAPIDAPI_KEY} `)
     res.status(500).json({ error: 'Failed to translate text' });
   }
 });
+
+
+
+app.use('/api/register', registerRoute);
+
+app.use('/api/login', loginRoute);
+
 
 export default app;
