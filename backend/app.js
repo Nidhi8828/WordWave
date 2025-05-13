@@ -1,3 +1,5 @@
+import path from 'path';
+// import { exec } from 'child_process';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -5,7 +7,12 @@ import multer from 'multer';
 import fs from 'fs';
 import pdfParse from 'pdf-parse';
 import axios from 'axios';
+// import textract from 'textract';
 
+
+// Extract text from uploaded PDF
+// import pdfParse from 'pdf-parse';
+import mammoth from 'mammoth';
 const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -19,25 +26,41 @@ app.get('/', (req, res) => {
   res.send('✅ Hello from Node backend!');
 });
 
-// Extract text from uploaded PDF
-app.post('/api/extract-text', upload.single('pdf'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
+
+
+app.post('/api/extract-text', upload.single('doc'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+  const filePath = req.file.path;
+  const originalName = req.file.originalname;
+  const ext = path.extname(originalName).toLowerCase();
+
+  const cleanup = () => fs.unlink(filePath, () => {});
 
   try {
-    const dataBuffer = fs.readFileSync(req.file.path);
-    const parsedData = await pdfParse(dataBuffer);
-    res.json({ text: parsedData.text });
-  } catch (err) {
-    console.error('❌ Error extracting PDF:', err.message);
-    res.status(500).json({ error: 'Failed to extract text from PDF' });
-  } finally {
-    try {
-      fs.unlinkSync(req.file.path); // Cleanup
-    } catch (err) {
-      console.error('❌ File deletion error:', err.message);
+    let text = '';
+
+    if (ext === '.txt') {
+      text = fs.readFileSync(filePath, 'utf8');
+    } else if (ext === '.pdf') {
+      const buffer = fs.readFileSync(filePath);
+      const data = await pdfParse(buffer);
+      text = data.text;
+    } else if (ext === '.docx') {
+      const buffer = fs.readFileSync(filePath);
+      const result = await mammoth.extractRawText({ buffer });
+      text = result.value;
+    } else {
+      cleanup();
+      return res.status(400).json({ error: `Unsupported file type: ${ext}` });
     }
+
+    cleanup();
+    res.json({ text });
+  } catch (err) {
+    console.error('❌ Extraction error:', err.message);
+    cleanup();
+    res.status(500).json({ error: 'Failed to extract text' });
   }
 });
 
