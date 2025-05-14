@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-
 
 function PDFTranslation() {
   const [file, setFile] = useState(null);
@@ -10,6 +9,26 @@ function PDFTranslation() {
   const [language, setLanguage] = useState('en');
   const [detectedLanguage, setDetectedLanguage] = useState('Unknown');
   const [loading, setLoading] = useState(false);
+  const [voices, setVoices] = useState([]);
+  const [selectedVoice, setSelectedVoice] = useState('');
+
+  // Load available voices on mount
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+
+    const loadVoices = () => {
+      const voiceList = synth.getVoices();
+      setVoices(voiceList);
+      if (voiceList.length > 0 && !selectedVoice) {
+        setSelectedVoice(voiceList[0].name);
+      }
+    };
+
+    loadVoices();
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = loadVoices;
+    }
+  }, [selectedVoice]);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -79,11 +98,13 @@ function PDFTranslation() {
       return;
     }
 
-    if (window.responsiveVoice) {
-      responsiveVoice.speak(translatedText, 'UK English Male', { rate: 1, pitch: 1, volume: 1 });
-    } else if ('speechSynthesis' in window) {
+    if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(translatedText);
-      utterance.lang = language === 'en' ? 'en-US' : language;
+      const voice = voices.find(v => v.name === selectedVoice);
+      if (voice) {
+        utterance.voice = voice;
+      }
+      utterance.lang = voice?.lang || language;
       window.speechSynthesis.speak(utterance);
     } else {
       alert('Text to Speech feature is not available.');
@@ -91,9 +112,7 @@ function PDFTranslation() {
   };
 
   const stopreadout = () => {
-    if (window.responsiveVoice) {
-      responsiveVoice.cancel();
-    } else if ('speechSynthesis' in window) {
+    if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
   };
@@ -105,15 +124,14 @@ function PDFTranslation() {
         <p>Select a PDF file, extract its text, and translate or read it aloud.</p>
 
         <div className="mb-3">
-        <label htmlFor="inpfile" className="form-label">Select Document:</label>
-<input
-  type="file"
-  className="form-control"
-  id="inpfile"
-  accept=".pdf,.doc,.docx,.txt,.rtf,.odt"
-  onChange={handleFileChange}
-/>
-
+          <label htmlFor="inpfile" className="form-label">Select Document:</label>
+          <input
+            type="file"
+            className="form-control"
+            id="inpfile"
+            accept=".pdf,.doc,.docx,.txt,.rtf,.odt"
+            onChange={handleFileChange}
+          />
         </div>
 
         <button className="btn btn-primary" onClick={handleExtractText}>Extract Text</button>
@@ -162,14 +180,29 @@ function PDFTranslation() {
         </div>
       </div>
 
+      <div className="container py-4">
+        <label className="form-label">Choose Voice / Accent:</label>
+        <select
+          className="form-select"
+          value={selectedVoice}
+          onChange={(e) => setSelectedVoice(e.target.value)}
+        >
+          {voices.map((voice, index) => (
+            <option key={index} value={voice.name}>
+              {voice.name} ({voice.lang})
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="container py-4" id="readout">
         <h4>Read Out</h4>
         <label className="form-label me-2">Click to Read Out Loud:</label>
         <button className="btn btn-primary me-2" onClick={handleReadOut}>
-          <i className="fa fa-volume-up"></i> Read Out
+          🔊 Read Out
         </button>
         <button className="btn btn-danger ms-2" onClick={stopreadout}>
-          <span role="img" aria-label="cancel">❌</span> Cancel
+          ❌ Cancel
         </button>
       </div>
     </>
