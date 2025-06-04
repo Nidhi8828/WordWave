@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
+import jsPDF from "jspdf";
 
 function PDFTranslation() {
   const [file, setFile] = useState(null);
@@ -11,6 +12,7 @@ function PDFTranslation() {
   const [loading, setLoading] = useState(false);
   const [voices, setVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState("");
+  const [format, setFormat] = useState("txt");
 
   // Load available voices on mount
   useEffect(() => {
@@ -112,6 +114,48 @@ function PDFTranslation() {
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url); // free the memory resources
+  };
+
+  const downloadPDFFile = (text, filename = "translation.pdf") => {
+    const doc = new jsPDF();
+
+    const margin = 10;
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    const maxLineWidth = pageWidth - margin * 2;
+    const lineHeight = 10;
+
+    // Clean text before generating PDF
+    const cleanedText = text
+      .split("\n") // Split by line breaks
+      .map((line) => line.trim()) // Trim each line
+      .filter((line) => line !== "") // Remove empty lines
+      .join("\n"); // Join back into a single string
+
+    const lines = doc.splitTextToSize(cleanedText, maxLineWidth);
+
+    let cursorY = margin;
+
+    lines.forEach((line, index) => {
+      if (cursorY + lineHeight > pageHeight - margin) {
+        doc.addPage();
+        cursorY = margin;
+      }
+
+      doc.text(line, margin, cursorY);
+      cursorY += lineHeight;
+    });
+
+    doc.save(filename);
+  };
+
+  const handleDownload = () => {
+    if (format == "txt") {
+      downloadTextFile(translatedText);
+    } else if (format == "pdf") {
+      downloadPDFFile(translatedText);
+    }
   };
 
   const handleReadOut = () => {
@@ -323,12 +367,20 @@ function PDFTranslation() {
         </div>
 
         {translatedText && (
-          <button
-            className="btn btn-primary mt-2"
-            onClick={() => downloadTextFile(translatedText)}
-          >
-            Download Translation
-          </button>
+          <div className="flex flex-col gap-4 mt-2 justify-center items-center">
+            <select
+              value={format}
+              className="border p-2 rounded bg-white text-black"
+              onChange={(e) => setFormat(e.target.value)}
+            >
+              <option value="txt">Download as .txt</option>
+              <option value="pdf">Download as .pdf</option>
+            </select>
+
+            <button className="btn btn-primary" onClick={handleDownload}>
+              Download Translation
+            </button>
+          </div>
         )}
       </div>
 
@@ -351,10 +403,10 @@ function PDFTranslation() {
         <h4>Read Out</h4>
         <label className="form-label me-2">Click to Read Out Loud:</label>
         <button className="btn btn-primary me-2" onClick={handleReadOut}>
-        🔊 Read Out
+          🔊 Read Out
         </button>
         <button className="btn btn-danger ms-2" onClick={stopreadout}>
-        ❌ Cancel
+          ❌ Cancel
         </button>
       </div>
     </>
