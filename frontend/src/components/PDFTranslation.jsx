@@ -150,7 +150,7 @@ function PDFTranslation() {
     doc.save(filename);
   };
 
-  const handleDownload = () => {
+  const handleDownloadFile = () => {
     if (format == "txt") {
       downloadTextFile(translatedText);
     } else if (format == "pdf") {
@@ -377,7 +377,7 @@ function PDFTranslation() {
               <option value="pdf">Download as .pdf</option>
             </select>
 
-            <button className="btn btn-primary" onClick={handleDownload}>
+            <button className="btn btn-primary" onClick={handleDownloadFile}>
               Download Translation
             </button>
           </div>
