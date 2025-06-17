@@ -12,7 +12,10 @@ const Login = () => {
     console.log("Email:", email, "Password:", password);
     try {
     // Send a POST request to the login endpoint
-    const response = await fetch("http://localhost:5000/api/login", {
+    const response = await fetch(
+      // "http://localhost:5000/api/login",
+      "https://wordwave-sr0b.onrender.com/api/login",
+       {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -67,7 +67,8 @@ function PDFTranslation() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/detect-language",
+        // "http://localhost:5000/api/detect-language",
+        "https://wordwave-sr0b.onrender.com/api/detect-language",
         { text: extractedText }
       );
       setDetectedLanguage(response.data.language);
@@ -86,7 +87,9 @@ function PDFTranslation() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/translate", {
+      const response = await axios.post(
+        // "http://localhost:5000/api/translate",
+        "https://wordwave-sr0b.onrender.com/api/translate", {
         text: extractedText,
         language: language,
       });

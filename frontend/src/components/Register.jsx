@@ -35,7 +35,7 @@ const Register = () => {
 
     // Registration logic
     try {
-      const response = await fetch("http://localhost:5000/api/register", {
+      const response = await fetch("https://wordwave-sr0b.onrender.com/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
