@@ -126,7 +126,7 @@ app.post("/api/translate", async (req, res) => {
     const response = await axios.post(
       "https://free-google-translator.p.rapidapi.com/external-api/free-google-translator",
       {
-        from: "en",
+        from: "auto",
         to: language,
         query: text,
       },
